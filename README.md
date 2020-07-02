@@ -1,2 +1,2 @@
-# node-trafic-lights-simulation
-Trafic lights simulation written in node.js
+# node-traffic-lights-simulation
+Traffic lights simulation written in node.js
