@@ -51,3 +51,7 @@ server.listen(8080);
 Then, each client could have own certificate, where fingerprint could be a unique id. All fingerprints would be imported to database before and main controller would be check if incoming traffic light is trusted.
 
 Also, there are really many ways to authenticate clients. Using some encrypted body, specific http headers values etc.
+
+## SQLite
+
+Contains 3 tables. Service writes data to file.
