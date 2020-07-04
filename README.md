@@ -24,5 +24,6 @@ piece of code. This is the next thing which should be investigated.
 * check for the same unique id of clients;
 * index.html could be more Vue.js stylish, it is first time when I use it so this is a place to improve;
 * Some hard code values should be more common;
+* More UTs to make coverage more tha 80%;
 * Racing conditions - to investigate if chose green light heuristic is not susceptible on race conditions;
 * Functional test, should be wrote to check all logic
