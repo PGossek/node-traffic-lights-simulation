@@ -5,6 +5,7 @@ const WebSocket = require('ws');
 const http = require('http');
 
 const choseLight = require('./chooseLight');
+const vueHelpersFunctions = require('./vueHelpersFunctions');
 
 const app = express();
 const port = 8080;
@@ -17,28 +18,10 @@ app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'));
 let totalWsNumber = 0;
 let greenColors = 0;
 
-function sendDataToVue(wss, ws, data) {
-    wss.clients.forEach((client) => {
-        if (client !== ws && client.readyState === WebSocket.OPEN && client.id === undefined) {
-            client.send(JSON.stringify(data));
-        }
-    });
-}
-
-function collectDataForVue(wss) {
-    const dataMapArray = [];
-    wss.clients.forEach((client) => {
-        if (client.readyState === WebSocket.OPEN && client.id !== undefined) {
-            dataMapArray.push({id: client.id, color: client.color});
-        }
-    });
-    return dataMapArray;
-}
-
 wss.on('connection', (ws) => {
     ws.on('message', (message) => {
         if(message === 'VueWantsData') {
-            ws.send(JSON.stringify(collectDataForVue(wss)));
+            ws.send(JSON.stringify(vueHelpersFunctions.collectDataForVue(wss)));
         }
         else {
             console.log(`There is new traffic light with ${message} id`);
@@ -50,7 +33,7 @@ wss.on('connection', (ws) => {
             if (ws.color === choseLight.colors.GREEN) {
                 greenColors++;
             }
-            sendDataToVue(wss, ws, [{id: ws.id, color: ws.color}]);
+            vueHelpersFunctions.sendDataToVue(wss, ws, [{id: ws.id, color: ws.color}]);
             setInterval(() => {
                 if (ws.readyState === WebSocket.OPEN) {
                     if (ws.color === choseLight.colors.GREEN) {
@@ -62,7 +45,7 @@ wss.on('connection', (ws) => {
                     if (ws.color === choseLight.colors.GREEN) {
                         greenColors++;
                     }
-                    sendDataToVue(wss, ws, [{id: ws.id, color: ws.color}]);
+                    vueHelpersFunctions.sendDataToVue(wss, ws, [{id: ws.id, color: ws.color}]);
                 }
             }, 20000);
         }
@@ -76,7 +59,7 @@ wss.on('connection', (ws) => {
             ws.terminate();
             return;
         }
-        sendDataToVue(wss, ws,[{id: ws.id, color: 'Connection closed'}]);
+        vueHelpersFunctions.sendDataToVue(wss, ws,[{id: ws.id, color: 'Connection closed'}]);
         totalWsNumber--;
         ws.terminate();
     });

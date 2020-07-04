@@ -1,6 +1,8 @@
 # Traffic light
 This is traffic lights simulation code.
 
+After a download and unpack project, remember to run `npm install`.
+
 You can run:
 * `npm run start <trafficLightId>` to fire traffic light client. 
 

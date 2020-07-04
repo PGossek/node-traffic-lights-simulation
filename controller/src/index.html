@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Traffic lights simulation</title>
     <script src="https://unpkg.com/vue"></script>
-    <style>
+    <style type="text/css">
         table, td, th {
             border: 1px solid #ddd;
             text-align: left;
@@ -17,12 +17,23 @@
             padding: 15px;
         }
         tr:nth-child(even) {background-color: #f2f2f2;}
+        @keyframes blinking {
+            0%{
+                background-color: yellow;
+            }
+            100%{
+                background-color: white;
+            }
+        }
+        #blinkingYellow{
+            animation: blinking 1s infinite;
+        }
     </style>
 </head>
 <div id="app">
     <table>
         <thead>
-        <tr>
+        <tr style="background-color:deepskyblue">
             <th v-for="header in headers">
                 {{header}}
             </th>
@@ -34,7 +45,12 @@
         </tr>
         <tr v-else v-for="(value, name) in lights">
             <td>{{name}}</td>
-            <td>{{value}}</td>
+            <td v-if="value === 'Red'" style="background: red">{{value}}</td>
+            <td v-else-if="value === 'Red-yellow'" style="background: linear-gradient(red, yellow);">{{value}}</td>
+            <td v-else-if="value === 'Yellow'" style="background: yellow">{{value}}</td>
+            <td v-else-if="value === 'Green'" style="background: green">{{value}}</td>
+            <td v-else-if="value === 'Connection closed'" id="blinkingYellow">{{value}}</td>
+            <td v-else style="background: white">{{value}}</td>
         </tr>
         </tbody>
     </table>
@@ -61,7 +77,7 @@
         el: '#app',
         data: {
             headers: [
-                "id", 'light'
+                "Traffic light ID", 'Light'
             ],
             lights: {}
         },
