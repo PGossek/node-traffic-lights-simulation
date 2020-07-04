@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Traffic lights simulation</title>
+    <script src="https://unpkg.com/vue"></script>
+    <style>
+        table, td, th {
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        table {
+            border-collapse: collapse;
+            width: 50%;
+        }
+        th, td {
+            padding: 15px;
+        }
+        tr:nth-child(even) {background-color: #f2f2f2;}
+    </style>
+</head>
+<div id="app">
+    <table>
+        <thead>
+        <tr>
+            <th v-for="header in headers">
+                {{header}}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-if="Object.keys(lights).length === 0">
+            <td>No data</td>
+        </tr>
+        <tr v-else v-for="(value, name) in lights">
+            <td>{{name}}</td>
+            <td>{{value}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    const ws = new WebSocket('ws://localhost:8080');
+
+    const lightsMap = {};
+
+    ws.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+
+        data.forEach((elem) => {
+            lightsMap[elem.id] = elem.color;
+        })
+        app.change(lightsMap);
+    };
+
+    ws.onopen = function() {
+        ws.send("VueWantsData")
+    };
+
+    let app = new Vue({
+        el: '#app',
+        data: {
+            headers: [
+                "id", 'light'
+            ],
+            lights: {}
+        },
+        methods: {
+            change: function(lightsMap) {
+                this.lights = lightsMap;
+            }
+        }
+    });
+</script>
+</html>
